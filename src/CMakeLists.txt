@@ -8,6 +8,10 @@ set(PYTHON python)
 set(NRF_PROJECT_NAME pinetime-app)
 set(NRF_BOARD pca10040)
 
+if (NOT LUA_PATH)
+    message(FATAL_ERROR "The path to Lua must be set.")
+endif ()
+
 # check if all the necessary tools paths have been provided.
 if (NOT NRF5_SDK_PATH)
     message(FATAL_ERROR "The path to the nRF5 SDK (NRF5_SDK_PATH) must be set.")
@@ -531,6 +535,7 @@ list(APPEND RECOVERY_SOURCE_FILES
         displayapp/DisplayAppRecovery.cpp
 
         main.cpp
+	lua_state.c
         drivers/St7789.cpp
         drivers/SpiNorFlash.cpp
         drivers/SpiMaster.cpp
@@ -706,6 +711,8 @@ set(INCLUDE_FILES
         touchhandler/TouchHandler.h
         )
 
+link_libraries("${LUA_PATH}/lib/liblua.a")
+
 include_directories(
         .
         ../
@@ -791,6 +798,7 @@ include_directories(
         "${NRF5_SDK_PATH}/components/libraries/util"
         "${NRF5_SDK_PATH}/external/segger_rtt/"
         "${NRF5_SDK_PATH}/external/fprintf/"
+	"${LUA_PATH}/include/"
         "${NRF5_SDK_PATH}/external/thedotfactory_fonts"
         "${NRF5_SDK_PATH}/components/libraries/gpiote"
 

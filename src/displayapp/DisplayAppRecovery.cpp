@@ -6,6 +6,7 @@
 #include "touchhandler/TouchHandler.h"
 #include "displayapp/icons/infinitime/infinitime-nb.c"
 #include "components/ble/BleController.h"
+#include "lua_state.h"
 
 using namespace Pinetime::Applications;
 
@@ -42,6 +43,9 @@ void DisplayApp::Process(void* instance) {
   xTaskNotifyGive(xTaskGetCurrentTaskHandle());
 
   app->InitHw();
+
+  open_lua();
+
   while (true) {
     app->Refresh();
   }
