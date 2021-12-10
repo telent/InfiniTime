@@ -62,6 +62,9 @@ let nrf5Sdk = pkgs.fetchzip {
         "-DGDB_CLIENT_TARGET_REMOTE=/dev/ttyACM0"
 #        "-DCMAKE_VERBOSE_MAKEFILE=1"
       ];
+      postBuild = ''
+        ${ctags}/bin/ctags --recurse -e . ${lua}/ ${nrf5Sdk}
+      '';
       makeFlags = [
 #        "pinetime-app"
         "pinetime-recovery"
