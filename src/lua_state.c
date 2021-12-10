@@ -140,7 +140,7 @@ int open_lua() {
      return 0;
 }
 
-#include "hello_lua.c"
+extern char hello_lua[];
 
 void lua_say_hello(){
   runstring(L, (char *) hello_lua);

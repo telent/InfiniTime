@@ -1,5 +1,4 @@
--- xxd -i hello.lua > hello_lua.c
--- FIXME need to teach cmake how to do this
+-- hellu_lua.c is created from this file
 
 for x = 1, 8 do
    for y = 1, 8 do

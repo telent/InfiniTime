@@ -529,6 +529,12 @@ list(APPEND SOURCE_FILES
         touchhandler/TouchHandler.cpp
         )
 
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/hello_lua.c
+  COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && xxd -i hello.lua > ${CMAKE_CURRENT_BINARY_DIR}/hello_lua.c
+  DEPENDS hello.lua
+  VERBATIM)
+
 list(APPEND RECOVERY_SOURCE_FILES
         BootloaderVersion.cpp
         logging/NrfLogger.cpp
@@ -536,6 +542,8 @@ list(APPEND RECOVERY_SOURCE_FILES
 
         main.cpp
 	lua_state.c
+	${CMAKE_CURRENT_BINARY_DIR}/hello_lua.c
+
         drivers/St7789.cpp
         drivers/SpiNorFlash.cpp
         drivers/SpiMaster.cpp
