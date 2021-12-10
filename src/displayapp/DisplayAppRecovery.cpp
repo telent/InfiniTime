@@ -2,9 +2,7 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include <libraries/log/nrf_log.h>
-#include "components/rle/RleDecoder.h"
 #include "touchhandler/TouchHandler.h"
-#include "displayapp/icons/infinitime/infinitime-nb.c"
 #include "components/ble/BleController.h"
 #include "lua_state.h"
 
@@ -96,12 +94,37 @@ void DisplayApp::Refresh() {
   }
 }
 
-void DisplayApp::DisplayLogo(uint16_t color) {
-  Pinetime::Tools::RleDecoder rleDecoder(infinitime_nb, sizeof(infinitime_nb), color, colorBlack);
-  for (int i = 0; i < displayWidth; i++) {
-    rleDecoder.DecodeNext(displayBuffer, displayWidth * bytesPerPixel);
+static uint16_t picture[] = {
+  0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+  0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+  0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+  0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+
+  0x0000, 0x0000, 0x0000, 0x0ff0, 0x0000, 0x0000, 0x0000, 0x0000,
+  0x0000, 0x0000, 0x0000, 0x0ff0, 0x0000, 0x0000, 0x0000, 0x0000,
+  0x0000, 0x0000, 0x0000, 0x0ff0, 0x00ff, 0x0000, 0x0000, 0x0000,
+  0x0000, 0x0000, 0x0000, 0x0ff0, 0x00ff, 0x00ff, 0x0000, 0x0000,
+};
+
+static uint8_t buffer[240 * 2];
+
+void DisplayApp::clear_screen() {
+  memset(buffer, 0, 240 * 2);
+  for(int y = 0;y < 240; y++) {
     ulTaskNotifyTake(pdTRUE, 500);
-    lcd.DrawBuffer(0, i, displayWidth, 1, reinterpret_cast<const uint8_t*>(displayBuffer), displayWidth * bytesPerPixel);
+    lcd.DrawBuffer(0, y, 240, 1, buffer, 240 * 2);
+  }
+}
+
+
+void DisplayApp::DisplayLogo(uint16_t color) {
+
+  const uint8_t * data = reinterpret_cast<const uint8_t*>(picture);
+  clear_screen();
+  for(int x = 10; x < 200;x += 12) {
+    ulTaskNotifyTake(pdTRUE, 500); // we do this before each drawBuffer call?
+
+    lcd.DrawBuffer(x, x, 8, 8, data, 2* sizeof picture);
   }
 }
 

@@ -71,6 +71,7 @@ namespace Pinetime {
       void DisplayOtaProgress(uint8_t percent, uint16_t color);
       void InitHw();
       void Refresh();
+      void clear_screen();
       Pinetime::Drivers::St7789& lcd;
       Controllers::Ble& bleController;
       Controllers::BrightnessController brightnessController;
