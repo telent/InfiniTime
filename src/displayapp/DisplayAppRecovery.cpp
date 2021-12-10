@@ -33,6 +33,8 @@ void DisplayApp::Start() {
     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
 }
 
+static Pinetime::Drivers::St7789 * private_lua_lcd;
+
 void DisplayApp::Process(void* instance) {
   auto* app = static_cast<DisplayApp*>(instance);
   NRF_LOG_INFO("displayapp task started!");
@@ -43,16 +45,31 @@ void DisplayApp::Process(void* instance) {
   app->InitHw();
 
   open_lua();
+  private_lua_lcd = &(app->lcd);
+
+  app->clear_screen();
+  lua_say_hello();
 
   while (true) {
     app->Refresh();
   }
 }
 
+
+extern uint16_t lcd_buffer[];
+
+extern "C" void draw_lcd_buffer(int x, int y, int w, int h, int length);
+
+void draw_lcd_buffer(int x, int y, int w, int h, int length){
+    ulTaskNotifyTake(pdTRUE, 500);
+    private_lua_lcd->DrawBuffer(x, y, w, h,
+				reinterpret_cast<const uint8_t*>(lcd_buffer),
+				length);
+}
+
 void DisplayApp::InitHw() {
   brightnessController.Init();
   brightnessController.Set(Controllers::BrightnessController::Levels::High);
-  DisplayLogo(colorWhite);
 }
 
 void DisplayApp::Refresh() {
@@ -120,7 +137,6 @@ void DisplayApp::clear_screen() {
 void DisplayApp::DisplayLogo(uint16_t color) {
 
   const uint8_t * data = reinterpret_cast<const uint8_t*>(picture);
-  clear_screen();
   for(int x = 10; x < 200;x += 12) {
     ulTaskNotifyTake(pdTRUE, 500); // we do this before each drawBuffer call?
 
