@@ -4,6 +4,8 @@
   C++ port Copyright (C) 2021 Jean-François Milants
 */
 
+#include <cstdint>
+#include <cstddef>
 #include "components/heartrate/Ppg.h"
 #include <vector>
 #include <nrf_log.h>
