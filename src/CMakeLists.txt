@@ -810,9 +810,12 @@ add_definitions(-DFREERTOS)
 add_definitions(-D__STACK_SIZE=1024)
 add_definitions(-D__HEAP_SIZE=4096)
 
+add_definitions(-DNRF_LOG_ENABLED=1 -DNRF_LOG_BACKEND_RTT_ENABLED=1)
+
+
 # NOTE : Add the following defines to enable debug mode of the NRF SDK:
-#add_definitions(-DDEBUG)
-#add_definitions(-DDEBUG_NRF_USER)
+add_definitions(-DDEBUG)
+add_definitions(-DDEBUG_NRF_USER)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
